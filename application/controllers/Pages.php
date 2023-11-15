@@ -466,9 +466,10 @@ class Pages extends CI_Controller {
         {
             $data = array('upload_data' => $this->upload->data());
             $receipt = $data['upload_data']['file_name'];
-            $update_receipt = $this->UsersModel->updateCustomerReceipt($receipt);
-            if($update_receipt) {
-            	$this->session->set_tempdata('success', 'Your payment is on processed. Thank you for your payment.', 0);
+            $update = $this->UsersModel->updateCustomerReceipt($receipt);
+            if($update) {
+            	$this->session->set_tempdata('success', 'Thank you for paying your bill.', 0);
+            	redirect('/receipt/'.$this->input->post('billing_id'));
             }
         }
 
@@ -532,6 +533,13 @@ class Pages extends CI_Controller {
         	}
         }
 
+	}
+
+	public function receipt($id) {
+		$settings = $this->SettingsModel->getSettings();
+		$bill = $this->UsersModel->getBilling($id);
+
+		$this->load->view('receipt',compact('bill','settings'));
 	}
 
 	public function profile()
