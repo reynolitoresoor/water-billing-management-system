@@ -306,18 +306,43 @@ class UsersModel extends CI_Model {
     }
 
     public function updateUserProfile() {
-        $data = array(
-            'first_name' => $this->input->post('first_name'),
-            'middle_name' => $this->input->post('middle_name'),
-            'last_name' => $this->input->post('last_name'),
-            'email' => $this->input->post('email'),
-            'username' => $this->input->post('username'),
-            'address' => $this->input->post('address'),
-            'contact_no' => $this->input->post('contact_no')
-        );
-        $this->db->set($data);
-        $this->db->where('id', $this->session->userdata('id'));
-        $results = $this->db->update('users');
+        $user_salt = $this->userSalt();
+
+        if(!empty($this->input->post('password')) && !empty($this->input->post('confirm_password'))) {
+            if($this->input->post('password') == $this->input->post('confirm_password')) {
+                $data = array(
+                    'first_name' => $this->input->post('first_name'),
+                    'middle_name' => $this->input->post('middle_name'),
+                    'last_name' => $this->input->post('last_name'),
+                    'email' => $this->input->post('email'),
+                    'username' => $this->input->post('username'),
+                    'address' => $this->input->post('address'),
+                    'contact_no' => $this->input->post('contact_no'),
+                    'password' => md5($this->input->post('password')).$user_salt,
+                    'user_salt' => $user_salt
+                );
+                $this->db->set($data);
+                $this->db->where('id', $this->session->userdata('id'));
+                $results = $this->db->update('users');
+            } else {
+                $this->session->set_tempdata('error', 'Password is not match.', 1);
+                $results = false;
+            }
+        } else {
+            $data = array(
+                'first_name' => $this->input->post('first_name'),
+                'middle_name' => $this->input->post('middle_name'),
+                'last_name' => $this->input->post('last_name'),
+                'email' => $this->input->post('email'),
+                'username' => $this->input->post('username'),
+                'address' => $this->input->post('address'),
+                'contact_no' => $this->input->post('contact_no')
+            );
+            $this->db->set($data);
+            $this->db->where('id', $this->session->userdata('id'));
+            $results = $this->db->update('users');
+        }
+        
 
         return $results;
     }
@@ -392,6 +417,16 @@ class UsersModel extends CI_Model {
         return $results->result();
     }
 
+    public function getBilling($billing_id) {
+        $this->db->select('*');
+        $this->db->from('bills');
+        $this->db->join('users','bills.user_id=users.id');
+        $this->db->where('bills.id',$billing_id);
+        $results = $this->db->get();
+
+        return $results->result();
+    }
+
     public function updateCustomerReceipt($receipt) {
         $data = array(
           'paid_amount' => $this->input->post('amount'),
@@ -401,7 +436,7 @@ class UsersModel extends CI_Model {
         $this->db->set($data);
         $this->db->where('id', $this->input->post('billing_id'));
         $results = $this->db->update('bills');
-
+        
         return $results;
     }
 
