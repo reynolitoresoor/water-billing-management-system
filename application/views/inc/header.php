@@ -42,7 +42,20 @@
         color: #4154f1;
         background: #f6f9ff;
     }
+    video {
+      object-fit: cover;
+      width: 100vw;
+      height: 100vh;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: -999;
+    }
   </style>
 </head>
 
 <body>
+  <video autoplay muted loop id="myVideo">
+  <source src="<?php echo base_url().'uploads/background-video.mp4' ?>" type="video/mp4">
+  Your browser does not support HTML5 video.
+</video>

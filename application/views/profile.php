@@ -27,6 +27,11 @@ include 'inc/header-nav.php';
                   <p class="text-success"><?php echo $this->session->tempdata('success'); ?></p>
                 </div>
                 <?php endif; ?>
+                <?php if($this->session->tempdata('error')): ?>
+                <div class="py-3">
+                  <p class="text-danger"><?php echo $this->session->tempdata('error'); ?></p>
+                </div>
+                <?php endif; ?>
                 <div class="row py-2">
                   <label for="profile-image" class="col-md-4 col-lg-3 col-form-label">Profile</label>
                   <div class="col-md-8 col-lg-9">
@@ -51,6 +56,10 @@ include 'inc/header-nav.php';
                       <label class="form-label" for="username">Username</label>
                       <input type="text" name="username" value="<?php echo $profile[0]->username; ?>" id="username" class="form-control" />
                     </div>
+                    <div class="form-group">
+                      <label class="form-label" for="password">New Password</label>
+                      <input type="password" name="password" value="" id="password" class="form-control" />
+                    </div>
                   </div>
                   <div class="col-lg-6">
                     <div class="form-group">
@@ -64,6 +73,10 @@ include 'inc/header-nav.php';
                     <div class="form-group">
                       <label class="form-label" for="contact-no">Contact Number</label>
                       <input type="text" name="contact_no" value="<?php echo $profile[0]->contact_no; ?>" id="contact-no" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label" for="confirm-password">Confirm Password</label>
+                      <input type="password" name="confirm_password" value="" id="confirm-password" class="form-control" />
                     </div>
                   </div>
                 </div>

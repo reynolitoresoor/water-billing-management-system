@@ -9,7 +9,7 @@ include 'inc/header.php'; ?>
             <div class="col-lg-4 col-md-6 d-flex flex-column align-items-center justify-content-center">
 
               <div class="d-flex justify-content-center py-4">
-                <a href="index.html" class="logo d-flex align-items-center w-auto text-center">
+                <a href="index.html" class="logo d-flex align-items-center w-auto text-center text-light">
                   <img src="assets/img/logo.png" alt="">
                   <span class="d-none d-lg-block"><?php echo (isset($settings[0]['field']) && $settings[0]['field'] == 'system_name')?$settings[0]['value']:'Water Billing Management System'; ?></span>
                 </a>

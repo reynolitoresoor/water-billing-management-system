@@ -43,6 +43,7 @@ include 'inc/header-nav.php';
                     <th scope="col">Meter From</th>
                     <th scope="col">Meter To</th>
                     <th scope="col">Status</th>
+                    <th scope="col">Receipt</th>
                     <th scope="col">Actions</th>
                   </tr>
                 </thead>
@@ -55,6 +56,11 @@ include 'inc/header-nav.php';
                     <td><?php echo $bill->meter_from; ?></td>
                     <td><?php echo $bill->meter_to; ?></td>
                     <td><?php if($bill->status == 0){echo '<span class="text-primary">Unpaid</span>';}else if($bill->status == 1){echo '<span class="text-success">Paid</span>';}else{echo '<span class="text-danger">For disconnection</span>';} ?></td>
+                    <td>
+                      <?php if($bill->paid_amount): ?>
+                      <a data-id="<?php echo $bill->id; ?>" href="<?php echo base_url().'receipt/'.$bill->id; ?>">View Receipt</a>
+                      <?php endif; ?>
+                    </td>
                     <td>
                       <?php if($bill->status != 1): ?>
                       <a class="btn btn-success" id="pay-bill" data-amount_due="<?php echo $bill->amount; ?>" data-billing_id="<?php echo $bill->id; ?>"><span class="bi">₱</span> Pay Bill</a>
@@ -131,6 +137,30 @@ include 'inc/header-nav.php';
       </div>
     </div>
   </main><!-- End #main -->
+  <!-- View receipt modal -->
+    <div class="modal fade" id="viewReceiptModal" tabindex="-1" style="display: none;" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <form method="POST" action="" id="pay-bill-form" enctype="multipart/form-data">
+            <div class="modal-header bg-primary">
+              <h5 class="modal-title text-light">Receipt</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <div class="row py-2">
+                <div class="col-12">
+                  <h2></h2>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-primary btn-pay">Pay</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
 <?php include 'inc/footer.php'; ?>
 <script type="text/javascript">
   $(document).ready(function() {
@@ -158,4 +188,27 @@ include 'inc/header-nav.php';
       }
     });
   });
+
+  function viewReceipt(e) {
+    var bill_id = $(e).data('id');
+    $.ajax({
+       type: 'POST',
+       url: '<?php echo base_url(); ?>requests/get-billing/'+bill_id,
+       success: function(data) {
+          if(data) {
+            var obj = JSON.parse(data);
+            $('#edit-form').find('#username').val(obj[0].username);
+            $('#edit-form').find('#email').val(obj[0].email);
+            $('#edit-form').find('#first-name').val(obj[0].first_name);
+            $('#edit-form').find('#middle-name').val(obj[0].middle_name);
+            $('#edit-form').find('#last-name').val(obj[0].last_name);
+            $('#edit-form').find('#contact-no').val(obj[0].contact_no);
+            $('#edit-form').find('#address').val(obj[0].address);
+            $('#edit-form').find('#customer-id').val(obj[0].id);
+            $('#editCustomerModal').modal('show');
+          }
+       }
+    });
+    $('#viewReceiptModal').modal('show');
+  }
 </script>
